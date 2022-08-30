@@ -115,6 +115,11 @@ def set_action(code):
         action.clear()
         action = motion.rght.copy()
         rows = len(motion.rght)
+    elif data_code == 129:
+        action_mode = 'KICK'
+        action.clear()
+        action = motion.kick.copy()
+        rows = len(motion.kick)
     elif code == 88:
         volt = bat.read_u16() * 0.00005035477 * 3
     div_counter = 0
@@ -152,6 +157,8 @@ while True:
                 next_key_frame += 1
                 if next_key_frame > rows-1:
                     next_key_frame = 0
+                if action[next_key_frame][12] == 127:
+                    action_mode = 'STOP'
                 if action[next_key_frame][13] == 0: #無音
                     buz.duty_u16(0)
                 elif action[next_key_frame][13] == 1: #「ド」

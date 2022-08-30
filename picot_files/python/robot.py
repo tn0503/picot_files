@@ -107,6 +107,11 @@ def set_action(mode):
         action.clear()
         action = motion.rght.copy()
         rows = len(motion.rght)
+    elif data_code == 129:
+        action_mode = 'KICK'
+        action.clear()
+        action = motion.kick.copy()
+        rows = len(motion.kick)
     
     div_counter = 0
     key_frame = 0
@@ -133,6 +138,8 @@ def drive():
             next_key_frame += 1
             if next_key_frame > rows-1:
                 next_key_frame = 0
+            if action[next_key_frame][12] == 127:
+                    action_mode = 'STOP'
             if action[next_key_frame][13] == 0: #無音
                 buz.duty_u16(0)
             elif action[next_key_frame][13] == 1: #「ド」

@@ -14,7 +14,7 @@ oled.display.line(32, 60, 96, 60, 1) #口
 oled.display.show()
 
 # ***** Action *****
-action_type=['STOP','FWRD','BWRD','LTRN','RTRN','LEFT','RGHT']
+action_type=['STOP','FWRD','BWRD','LTRN','RTRN','LEFT','RGHT','KICK']
 SV_FREQ = 50.0  # サーボ信号周波数
 MAX_DUTY = 65025.0 # 周期内の分割数
 MIN_SV_PULSE = 0.6  # 最小パルス幅　0°
@@ -114,6 +114,11 @@ def set_action(code):
         action.clear()
         action = motion.rght.copy()
         rows = len(motion.rght)
+    elif data_code == 129:
+        action_mode = 'KICK'
+        action.clear()
+        action = motion.kick.copy()
+        rows = len(motion.kick)
     div_counter = 0
     key_frame = 0
     next_key_frame = 1
@@ -143,6 +148,8 @@ while True:
                 next_key_frame += 1
                 if next_key_frame > rows-1:
                     next_key_frame = 0
+                if action[next_key_frame][12] == 127:
+                    action_mode = 'STOP'
                 if action[next_key_frame][13] == 0: #無音
                     buz.duty_u16(0)
                 elif action[next_key_frame][13] == 1: #「ド」
@@ -157,6 +164,7 @@ while True:
 (action[next_key_frame][i] - action[key_frame][i])\
 * div_counter / action[key_frame][12]
         else:
+            buz.duty_u16(0)
             for i in range(12):
                 temp_angle[i] = 90
         # サーボ駆動

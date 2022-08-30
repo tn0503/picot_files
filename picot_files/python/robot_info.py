@@ -15,7 +15,7 @@ oled.display.text('STOP', 46, 56, 1)
 oled.display.show()
 
 # ***** Action *****
-action_type=['STOP','FWRD','BWRD','LTRN','RTRN','LEFT','RGHT']
+action_type=['STOP','FWRD','BWRD','LTRN','RTRN','LEFT','RGHT','KICK']
 SV_FREQ = 50.0  # サーボ信号周波数
 MAX_DUTY = 65025.0 # 周期内の分割数
 MIN_SV_PULSE = 0.6  # 最小パルス幅　0°
@@ -115,6 +115,11 @@ def set_action(code):
         action.clear()
         action = motion.rght.copy()
         rows = len(motion.rght)
+    elif data_code == 129:
+        action_mode = 'KICK'
+        action.clear()
+        action = motion.kick.copy()
+        rows = len(motion.kick)
     elif code == 88:
         volt = bat.read_u16() * 0.00005035477 * 3
     div_counter = 0
